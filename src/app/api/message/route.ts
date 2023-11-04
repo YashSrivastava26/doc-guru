@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
 
   const result = await vectorStore.similaritySearch(
     "Innover Digital Recruitment Drive-Online Test on 16th Oct'2023 for 2024 Graduating Batch",
-    4,
+    1,
     {
       "pdf.info.Title": file.id,
     }
@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
     orderBy: {
       createdAt: "asc",
     },
-    take: 7,
+    take: 6,
   });
 
   const formattedPrevMessage = prevMessage.map((message) => ({

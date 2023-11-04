@@ -9,9 +9,10 @@ import { ChatContextProvider } from "./ChatContext";
 
 interface ChatViewerProps {
   fileId: string;
+  isSubscribed: boolean;
 }
 
-const ChatViewer: FC<ChatViewerProps> = ({ fileId }) => {
+const ChatViewer: FC<ChatViewerProps> = ({ fileId, isSubscribed }) => {
   const { data, isLoading } = trpc.getFileStatus.useQuery(
     {
       fileId: fileId,
@@ -33,7 +34,7 @@ const ChatViewer: FC<ChatViewerProps> = ({ fileId }) => {
     return <ChatLoader message="Processing" />;
   }
   if (data?.status === "FAILED") {
-    return <ChatViewerErrorState />;
+    return <ChatViewerErrorState isSubscribed={isSubscribed} />;
   }
 
   return (

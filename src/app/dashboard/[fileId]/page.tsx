@@ -1,6 +1,7 @@
 import ChatViewer from "@/components/chat/ChatViewer";
 import PDFViewer from "@/components/PDFViewer";
 import { db } from "@/db";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { FC } from "react";
@@ -20,6 +21,8 @@ const page: FC<pageProps> = async ({ params }) => {
   if (!user || !user.id) {
     redirect(`/auth-callback?origin=dashboard/${fileId}`);
   }
+
+  const subscription = await getUserSubscriptionPlan();
 
   //fetching file
   const file = await db.files.findUnique({
@@ -44,7 +47,10 @@ const page: FC<pageProps> = async ({ params }) => {
           </div>
         </div>
         <div className="shrink-0 flex-[0.75] border-t border-t-gray-200 lg:border-l lg:border-t-0 lg:w-96 ">
-          <ChatViewer fileId={fileId} />
+          <ChatViewer
+            fileId={fileId}
+            isSubscribed={subscription.isSubscribed}
+          />
         </div>
       </div>
     </div>

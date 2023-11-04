@@ -3,9 +3,11 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { FC, useState } from "react";
 import UploadZone from "./UploadZone";
-interface UploadButtonProps {}
+interface UploadButtonProps {
+  isSubscribed: boolean;
+}
 
-const UploadButton: FC<UploadButtonProps> = ({}) => {
+const UploadButton: FC<UploadButtonProps> = ({ isSubscribed }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -14,7 +16,7 @@ const UploadButton: FC<UploadButtonProps> = ({}) => {
         <Button>Upload PDF</Button>
       </DialogTrigger>
       <DialogContent>
-        <UploadZone />
+        <UploadZone isSubscribed={isSubscribed} />
       </DialogContent>
     </Dialog>
   );

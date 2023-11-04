@@ -3,8 +3,14 @@ import MessageInput from "./chat/MessageInput";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { FC } from "react";
 
-export const ChatViewerErrorState = () => {
+interface ChatViewerErrorStateProps {
+  isSubscribed: boolean;
+}
+export const ChatViewerErrorState: FC<ChatViewerErrorStateProps> = ({
+  isSubscribed,
+}) => {
   return (
     <div className="relative flex flex-col justify-between gap-2 divide-y divide-zinc-300 bg-zinc-50 min-h-full">
       <div className="flex justify-center items-center flex-col flex-1 mb-28">
@@ -12,7 +18,9 @@ export const ChatViewerErrorState = () => {
           <XCircle className="h-9 w-9 text-destructive-foreground opacity-70" />
           <h3 className="font-semibold text-xl">Too many Pages in PDF</h3>
           <p className="text-sm text-zinc-500">
-            your <span className="font-medium">Free</span> plan supports upto 7
+            your{" "}
+            <span className="font-medium">{isSubscribed ? "Pro" : "Free"}</span>{" "}
+            plan supports upto {isSubscribed ? "10 " : "5 "}
             pages per PDF
           </p>
           <Link

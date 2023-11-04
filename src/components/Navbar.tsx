@@ -9,6 +9,7 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs/server";
 import { ArrowRight } from "lucide-react";
 import AccountMenu from "./AccountMenu";
+import MobileView from "./MobileView";
 
 interface NavbarProps {}
 
@@ -26,6 +27,8 @@ const Navbar: FC<NavbarProps> = ({}) => {
           >
             DocGuru
           </Link>
+
+          <MobileView isAuth={!!user} />
           <div className="hidden sm:flex sm:items-center space-x-4">
             {!user ? (
               <>

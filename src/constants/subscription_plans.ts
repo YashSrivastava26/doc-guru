@@ -4,7 +4,7 @@ export const subscriptionPlansDetails = [
   {
     plan: "Free",
     tagline: "For small side projects.",
-    quota: 10,
+    quota: 5,
     features: [
       {
         text: "5 pages per PDF",

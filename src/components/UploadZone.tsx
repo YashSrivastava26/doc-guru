@@ -7,8 +7,10 @@ import { useToast } from "./ui/use-toast";
 import { trpc } from "@/app/_trpc/client";
 import { useRouter } from "next/navigation";
 
-interface UploadZoneProps {}
-const UploadZone: FC<UploadZoneProps> = ({}) => {
+interface UploadZoneProps {
+  isSubscribed: boolean;
+}
+const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const { toast } = useToast();
@@ -38,7 +40,9 @@ const UploadZone: FC<UploadZoneProps> = ({}) => {
     retryDelay: 500,
   });
 
-  const { startUpload } = useUploadThing("pdfUploader");
+  const { startUpload } = useUploadThing(
+    isSubscribed ? "proPlanUploader" : "freePlanUploader"
+  );
   return (
     <Dropzone
       multiple={false}
@@ -91,7 +95,9 @@ const UploadZone: FC<UploadZoneProps> = ({}) => {
                   <span className="font-semibold">Click to Upload</span> or drag
                   and drop
                 </p>
-                <p className="text-xs text-zinc-500">PDF (upto 4MB)</p>
+                <p className="text-xs text-zinc-500">
+                  PDF (upto {isSubscribed ? "16MB" : "4MB"})
+                </p>
               </div>
 
               {acceptedFiles && acceptedFiles.length > 0 ? (

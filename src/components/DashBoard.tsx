@@ -7,10 +7,13 @@ import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Button } from "./ui/button";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
-interface DashBoardProps {}
+interface DashBoardProps {
+  subscription: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
+}
 
-const DashBoard: FC<DashBoardProps> = ({}) => {
+const DashBoard: FC<DashBoardProps> = ({ subscription }) => {
   const [currentDeletingFile, setCurrentDeletingFile] = useState<string | null>(
     null
   );
@@ -33,7 +36,7 @@ const DashBoard: FC<DashBoardProps> = ({}) => {
       <div className="mt-8 flex items-start flex-col justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:gap-0 sm:items-center">
         <h1 className="mb-3 font-bold text-5xl text-gray-900">My Files</h1>
 
-        <UploadButton />
+        <UploadButton isSubscribed={subscription.isSubscribed} />
       </div>
 
       {/* display files user have */}
