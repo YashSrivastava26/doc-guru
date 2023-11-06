@@ -32,6 +32,7 @@
     "@types/dropzone": "^5.7.6",
     "@uploadthing/react": "^5.6.2",
     "ai": "^2.2.20",
+    "axios": "^1.6.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",

@@ -87,9 +87,9 @@ const MobileView: FC<MobileViewProps> = ({ isAuth }) => {
 
                 <li>
                   <Link
-                    href="/pricing"
+                    href="/pricings"
                     className="flex items-center w-full font-semibold text-secondary-foreground"
-                    onClick={() => closeOnCurrent("/pricing")}
+                    onClick={() => closeOnCurrent("/pricings")}
                   >
                     Pricing
                   </Link>

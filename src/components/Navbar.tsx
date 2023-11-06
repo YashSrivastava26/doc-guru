@@ -33,7 +33,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
             {!user ? (
               <>
                 <Link
-                  href="/pricing"
+                  href="/pricings"
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",

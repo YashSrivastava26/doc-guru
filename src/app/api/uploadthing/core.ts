@@ -8,19 +8,19 @@ import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { PDFDocument } from "pdf-lib";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { SUBSCRIPTION_PLANS } from "@/config/subscription-plans";
+import { z } from "zod";
 const f = createUploadthing();
 
 const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
-const middleware = async () => {
+const middleware = async ({ input }: { input: { openai_api_key: string } }) => {
   const { getUser } = getKindeServerSession();
   const user = getUser();
-
   if (!user) {
     throw new Error("UNAUTHORIZED");
   }
   const subscription = await getUserSubscriptionPlan();
-  return { userId: user.id, subscription };
+  return { userId: user.id, subscription, openAIApiKey: input.openai_api_key };
 };
 
 const onUploadComplete = async ({
@@ -98,12 +98,16 @@ const onUploadComplete = async ({
       });
       return;
     }
+
+    if (!metadata.openAIApiKey) {
+      throw new Error();
+    }
     //encoding it to vector
     const pinecone = await getPineconeClient();
     const pineconeIndex = pinecone.Index("chat-guru");
 
     const embeddings = new OpenAIEmbeddings({
-      openAIApiKey: process.env.OPENAI_API_KEY,
+      openAIApiKey: metadata.openAIApiKey,
     });
 
     await PineconeStore.fromDocuments(docs, embeddings, {
@@ -132,9 +136,11 @@ const onUploadComplete = async ({
 };
 export const ourFileRouter = {
   freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })
+    .input(z.object({ openai_api_key: z.string() }))
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
   proPlanUploader: f({ pdf: { maxFileSize: "16MB" } })
+    .input(z.object({ openai_api_key: z.string() }))
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
 } satisfies FileRouter;

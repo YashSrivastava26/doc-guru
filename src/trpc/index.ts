@@ -7,6 +7,7 @@ import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { absolutePath } from "@/lib/utils";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
 import { SUBSCRIPTION_PLANS } from "@/config/subscription-plans";
+import OpenAI from "openai";
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
@@ -202,5 +203,36 @@ export const appRouter = router({
 
     return { url: stripeSession.url };
   }),
+  checkOpenApiKey: privateProcedure
+    .input(
+      z.object({
+        openApiKey: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log(input.openApiKey);
+      try {
+        const openai = new OpenAI({
+          apiKey: input.openApiKey,
+        });
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          temperature: 0,
+          messages: [
+            {
+              role: "system",
+              content:
+                "this message is just to check availability of the api key, you dont need to answer anything",
+            },
+          ],
+        });
+
+        console.log(response.choices[0].message, input.openApiKey);
+        return { success: true };
+      } catch (error) {
+        return { success: false };
+      }
+    }),
 });
 export type AppRouter = typeof appRouter;

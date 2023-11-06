@@ -13,6 +13,8 @@ interface UploadZoneProps {
 const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [error, setError] = useState<boolean>(false);
+  const openai_api_key = localStorage.getItem("openai_api_key") || "";
   const { toast } = useToast();
   const router = useRouter();
 
@@ -48,15 +50,20 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
       multiple={false}
       onDrop={async (acceptedFile) => {
         setIsUploading(true);
+        setError(false);
         const interval = startProgress();
         console.log(acceptedFile);
         //file upload
-        const response = await startUpload(acceptedFile);
+        const response = await startUpload(acceptedFile, {
+          openai_api_key: openai_api_key,
+        });
 
         if (!response) {
+          clearInterval(interval);
+          setError(true);
           return toast({
             title: "Something went wrong with the upload",
-            description: "Please try again",
+            description: "Please make sure you have entered correct api key",
             variant: "destructive",
           });
         }
@@ -65,9 +72,11 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
         const key = fileResponse.key;
 
         if (!key) {
+          clearInterval(interval);
+          setError(true);
           return toast({
             title: "Something went wrong with the upload",
-            description: "Please try again",
+            description: "Please make sure you have entered correct api key",
             variant: "destructive",
           });
         }
@@ -116,7 +125,13 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
                   <Progress
                     className="bg-zinc-200 w-full h-2"
                     value={uploadProgress}
-                    color={uploadProgress === 100 ? "bg-green-500" : ""}
+                    color={
+                      uploadProgress === 100
+                        ? "bg-green-500"
+                        : error
+                        ? "bg-destructive-foreground"
+                        : ""
+                    }
                   />
                   {uploadProgress === 100 ? (
                     <div className="flex items-center justify-center text-sm text-zinc-700 text-center pt-2 gap-1">

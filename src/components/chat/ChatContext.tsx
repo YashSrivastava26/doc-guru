@@ -35,10 +35,13 @@ export const ChatContextProvider = ({
 
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
-      const response = await fetch(`/api/message`, {
-        method: "POST",
-        body: JSON.stringify({ message, fileId }),
-      });
+      const response = await fetch(
+        `/api/message?openai_api_key=${localStorage.getItem("openai_api_key")}`,
+        {
+          method: "POST",
+          body: JSON.stringify({ message, fileId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to send message");
@@ -165,6 +168,11 @@ export const ChatContextProvider = ({
         { fileId },
         { messages: context?.previousMessage ?? [] }
       );
+      return toast({
+        title: "Something went wrong",
+        description: "Please make sure you have entered valid api key",
+        variant: "destructive",
+      });
     },
     onSettled: async (stream) => {
       setIsLoading(false);

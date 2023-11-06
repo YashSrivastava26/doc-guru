@@ -71,12 +71,12 @@ const AccountMenu: FC<AccountMenuProps> = async ({ user }) => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {subscription?.isSubscribed ? (
-            <Link href="/dashboard/billings" className="text-muted-foreground">
+            <Link href="/dashboard/billing" className="text-muted-foreground">
               Manage Subscription
             </Link>
           ) : (
             <Link
-              href="/pricing"
+              href="/pricings"
               className="font-semibold flex !justify-start text-muted-foreground"
             >
               Upgrade

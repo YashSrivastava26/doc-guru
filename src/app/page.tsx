@@ -105,7 +105,7 @@ export default function Home() {
               <span className="mt-2 text-zinc-700 ">
                 Either starting out with free plan or choose our{" "}
                 <Link
-                  href="/pricing"
+                  href="/pricings"
                   className="text-violet-700 underline underline-offset-2"
                 >
                   pro plans

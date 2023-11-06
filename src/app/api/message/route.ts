@@ -1,5 +1,4 @@
 import { db } from "@/db";
-import { openai } from "@/lib/openai";
 import { getPineconeClient } from "@/lib/pinecone";
 import { sendMessageValidator } from "@/lib/validators/sendMessage";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
@@ -7,6 +6,7 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { NextRequest } from "next/server";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import OpenAI from "openai";
 
 export const POST = async (req: NextRequest) => {
   // route /api/message
@@ -14,6 +14,16 @@ export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const { getUser } = getKindeServerSession();
   const user = getUser();
+
+  const OPENAI_API_KEY = req.nextUrl.searchParams.get("openai_api_key");
+
+  if (!OPENAI_API_KEY) {
+    return new Response("Incorrect OPENAI_API_KEY", { status: 403 });
+  }
+
+  const openai = new OpenAI({
+    apiKey: OPENAI_API_KEY,
+  });
 
   if (!user || !user.id) {
     return new Response("Unauthorized", { status: 401 });
@@ -44,7 +54,7 @@ export const POST = async (req: NextRequest) => {
   //getting contend with vector DB
 
   const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+    openAIApiKey: OPENAI_API_KEY,
   });
 
   const pinecone = await getPineconeClient();
