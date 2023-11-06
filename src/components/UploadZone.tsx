@@ -29,13 +29,19 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
         prevProgress += 1;
         return prevProgress;
       });
-    }, 100);
+    }, 200);
 
     return interval;
   };
+  const { mutate: startProcessing } = trpc.startProcessing.useMutation();
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
+      startProcessing({
+        fileId: file.id,
+        key: file.key,
+        openai_api_key: localStorage.getItem("openai_api_key") || "",
+      });
       router.push(`/dashboard/${file.id}`);
     },
     retry: true,
@@ -52,12 +58,8 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
         setIsUploading(true);
         setError(false);
         const interval = startProgress();
-        console.log(acceptedFile);
         //file upload
-        const response = await startUpload(acceptedFile, {
-          openai_api_key: openai_api_key,
-        });
-
+        const response = await startUpload(acceptedFile);
         if (!response) {
           clearInterval(interval);
           setError(true);
@@ -67,7 +69,6 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
             variant: "destructive",
           });
         }
-
         const [fileResponse] = response;
         const key = fileResponse.key;
 
