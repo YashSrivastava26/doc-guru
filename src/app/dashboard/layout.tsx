@@ -19,7 +19,7 @@ interface layoutProps {
   children: ReactNode;
 }
 
-const layout: FC<layoutProps> = ({ children }) => {
+const Layout: FC<layoutProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openai_api_key, setOpenai_api_key] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
@@ -104,4 +104,4 @@ const layout: FC<layoutProps> = ({ children }) => {
   );
 };
 
-export default layout;
+export default Layout;

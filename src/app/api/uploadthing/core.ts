@@ -88,20 +88,13 @@ const onUploadComplete = async ({
     const pagesExceeded = pagesAmt > pagesAllowed;
 
     if (pagesExceeded) {
-      await db.files.update({
-        where: {
-          id: createdFile.id,
-        },
-        data: {
-          uploadStatus: "FAILED",
-        },
-      });
-      return;
+      throw new Error("PAGE_LIMIT_EXCEEDED");
     }
 
     if (!metadata.openAIApiKey) {
-      throw new Error();
+      throw new Error("INVALID_OPENAI_API_KEY");
     }
+
     //encoding it to vector
     const pinecone = await getPineconeClient();
     const pineconeIndex = pinecone.Index("chat-guru");
