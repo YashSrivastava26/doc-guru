@@ -6,6 +6,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "./ui/use-toast";
 import { trpc } from "@/app/_trpc/client";
 import { useRouter } from "next/navigation";
+import { db } from "@/db";
 
 interface UploadZoneProps {
   isSubscribed: boolean;
@@ -33,15 +34,26 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
 
     return interval;
   };
-  const { mutate: startProcessing } = trpc.startProcessing.useMutation();
+  const { mutate: startProcessing, error: processingError } =
+    trpc.startProcessing.useMutation({});
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
-    onSuccess: (file) => {
+    onSuccess: async (file) => {
       startProcessing({
         fileId: file.id,
         key: file.key,
         openai_api_key: localStorage.getItem("openai_api_key") || "",
       });
+      if (processingError) {
+        await db.files.update({
+          where: {
+            id: file.id,
+          },
+          data: {
+            uploadStatus: "FAILED",
+          },
+        });
+      }
       router.push(`/dashboard/${file.id}`);
     },
     retry: true,
@@ -143,12 +155,12 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
                 </div>
               ) : null}
 
-              <input
+              {/* <input
                 type="file"
                 id="dropzone-file"
                 className="hidden"
                 {...getInputProps}
-              />
+              /> */}
             </label>
           </div>
         </div>

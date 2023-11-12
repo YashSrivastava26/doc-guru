@@ -19,8 +19,7 @@ export default function Home() {
           document. Upload your document and ask your question.
         </p>
         <Link
-          href="/dashboad"
-          target="_blank"
+          href="/dashboard"
           className={buttonVariants({ size: "lg", className: "mt-5" })}
         >
           {" "}
