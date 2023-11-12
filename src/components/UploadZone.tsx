@@ -15,7 +15,6 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
-  const openai_api_key = localStorage.getItem("openai_api_key") || "";
   const { toast } = useToast();
   const router = useRouter();
 
@@ -38,14 +37,14 @@ const UploadZone: FC<UploadZoneProps> = ({ isSubscribed }) => {
     trpc.startProcessing.useMutation({});
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
-    onSuccess: async (file) => {
+    onSuccess: (file) => {
       startProcessing({
         fileId: file.id,
         key: file.key,
         openai_api_key: localStorage.getItem("openai_api_key") || "",
       });
       if (processingError) {
-        await db.files.update({
+        db.files.update({
           where: {
             id: file.id,
           },
