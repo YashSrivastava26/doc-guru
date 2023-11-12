@@ -79,7 +79,7 @@ export const POST = async (req: NextRequest) => {
     orderBy: {
       createdAt: "asc",
     },
-    take: 6,
+    take: 1,
   });
 
   const formattedPrevMessage = prevMessage.map((message) => ({
@@ -119,6 +119,7 @@ export const POST = async (req: NextRequest) => {
     ],
   });
 
+  // streaming response
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
       await db.message.create({
@@ -133,4 +134,6 @@ export const POST = async (req: NextRequest) => {
   });
 
   return new StreamingTextResponse(stream);
+
+  //non streaming response so vercel do not timeout
 };
