@@ -64,13 +64,9 @@ export const POST = async (req: NextRequest) => {
     pineconeIndex,
   });
 
-  const result = await vectorStore.similaritySearch(
-    "Innover Digital Recruitment Drive-Online Test on 16th Oct'2023 for 2024 Graduating Batch",
-    1,
-    {
-      "pdf.info.Title": file.id,
-    }
-  );
+  const result = await vectorStore.similaritySearch(message, 1, {
+    "pdf.info.Title": file.id,
+  });
 
   const prevMessage = await db.message.findMany({
     where: {

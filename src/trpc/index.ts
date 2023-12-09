@@ -299,8 +299,9 @@ export const appRouter = router({
 
         await PineconeStore.fromDocuments(docs, embeddings, {
           pineconeIndex,
+          namespace: fileId,
         });
-        await new Promise((resolve) => setTimeout(resolve, 5000)); //
+
         await db.files.update({
           where: {
             id: fileId,
