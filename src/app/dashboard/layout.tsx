@@ -28,11 +28,9 @@ const Layout: FC<layoutProps> = ({ children }) => {
     trpc.checkOpenApiKey.useMutation({
       onSuccess: ({ success }) => {
         if (success) {
-          console.log("success");
           localStorage.setItem("openai_api_key", openai_api_key);
           setIsOpen(false);
         } else {
-          console.log("error");
           setError(true);
         }
       },

@@ -38,7 +38,6 @@ const SubscriptionManagement: FC<SubscriptionManagementProps> = ({
         }
       },
     });
-  console.log(subscription);
   return (
     <MaxWidthWraper className="max-w-6xl">
       <form
@@ -71,7 +70,7 @@ const SubscriptionManagement: FC<SubscriptionManagementProps> = ({
                   Upgrade
                   <Zap className="fill-white ml-2" />
                 </Button>
-                <p className="">
+                <p>
                   {subscription.isCanceled
                     ? "Your plan will be canceled on: "
                     : "Your plan will be renew on: "}

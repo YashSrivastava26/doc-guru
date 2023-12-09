@@ -12,7 +12,7 @@ export function absolutePath(path: string) {
   } else if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}${path}`;
   } else if (process.env.NEXT_PUBLIC_URL) {
-    return `https://${process.env.NEXT_PUBLIC_URL}${path}`;
+    return `${process.env.NEXT_PUBLIC_URL}${path}`;
   } else {
     return `http://localhost:${process.env.PORT ?? 3000}${path}`;
   }
